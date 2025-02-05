@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.example.proyecto_francisco_marquez.ui.gradientBackground
 import com.example.proyecto_francisco_marquez.viewmodel.CharactersViewModel
 
 @Composable
@@ -35,6 +36,7 @@ fun CharacterScreen(navController: NavHostController, filter: String, viewModel:
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .gradientBackground()
                         .padding(8.dp)
                         .clickable {
                             navController.navigate("characterDetail/${character.id}")

@@ -7,6 +7,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.proyecto_francisco_marquez.ui.gradientBackground
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
@@ -15,7 +16,7 @@ fun ForgotPasswordScreen(navController: NavHostController) {
     val auth = Firebase.auth
     var email by remember { mutableStateOf("") }
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp).gradientBackground()) {
         Text(text = "Forgot Password Screen")
         OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Email") })
 

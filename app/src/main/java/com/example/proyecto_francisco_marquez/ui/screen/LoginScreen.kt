@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.proyecto_francisco_marquez.R
+import com.example.proyecto_francisco_marquez.ui.gradientBackground
 import com.example.proyecto_francisco_marquez.viewmodel.AuthViewModel
 import com.example.proyecto_francisco_marquez.utils.InicioConGoogle
 
@@ -49,7 +50,7 @@ fun LoginScreen(navController: NavHostController) {
             .padding(16.dp)
     ) {
         Column(
-            modifier = Modifier.align(Alignment.Center),
+            modifier = Modifier.align(Alignment.Center).gradientBackground().fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // App Logo

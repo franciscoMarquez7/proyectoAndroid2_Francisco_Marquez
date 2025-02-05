@@ -15,6 +15,7 @@ import coil.compose.AsyncImage
 import coil.imageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
+import com.example.proyecto_francisco_marquez.ui.gradientBackground
 import kotlinx.coroutines.*
 
 @Composable
@@ -32,6 +33,7 @@ fun CharacterDetailScreen(characterId: String?, navController: NavHostController
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .gradientBackground()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

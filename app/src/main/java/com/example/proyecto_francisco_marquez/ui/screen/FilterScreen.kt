@@ -7,6 +7,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.proyecto_francisco_marquez.ui.gradientBackground
 import com.google.firebase.auth.FirebaseAuth
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -17,7 +18,7 @@ fun FilterScreen(navController: NavHostController) {
     var expanded by remember { mutableStateOf(false) }
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
+        modifier = Modifier.fillMaxSize().padding(16.dp).gradientBackground(),
         verticalArrangement = Arrangement.Center
     ) {
         Text("Select Character Status", style = MaterialTheme.typography.headlineLarge)

@@ -9,6 +9,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.proyecto_francisco_marquez.ui.gradientBackground
 import com.example.proyecto_francisco_marquez.viewmodel.AuthViewModel
 
 @Composable
@@ -18,7 +19,7 @@ fun RegisterScreen(navController: NavHostController) {
     var password by remember { mutableStateOf("") }
     val context = LocalContext.current
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp).gradientBackground()) {
         Text(text = "Register Screen")
 
         OutlinedTextField(
