@@ -1,7 +1,7 @@
 package com.example.proyecto_francisco_marquez.ui.screen
 
-import android.graphics.Bitmap
 import android.widget.Toast
+import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -15,6 +15,8 @@ import coil.compose.AsyncImage
 import coil.imageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
+import com.example.proyecto_francisco_marquez.ui.ModernButton
+import com.example.proyecto_francisco_marquez.ui.TitleStyle
 import com.example.proyecto_francisco_marquez.ui.gradientBackground
 import kotlinx.coroutines.*
 
@@ -24,30 +26,28 @@ fun CharacterDetailScreen(characterId: String?, navController: NavHostController
     val coroutineScope = rememberCoroutineScope()
 
     if (characterId.isNullOrEmpty()) {
-        Text("Error: No character ID provided", style = MaterialTheme.typography.headlineLarge)
+        Text("Error: No character ID provided", style = TitleStyle)
         return
     }
 
     val imageUrl = remember { "https://rickandmortyapi.com/api/character/avatar/$characterId.jpeg" }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .gradientBackground()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+    Box(
+        modifier = Modifier.fillMaxSize().padding(16.dp).gradientBackground()
     ) {
-        // Mostrar imagen
-        AsyncImage(
-            model = imageUrl,
-            contentDescription = "Character Image",
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(300.dp)
-        )
+        Column(
+            modifier = Modifier.align(Alignment.Center).fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            AsyncImage(
+                model = imageUrl,
+                contentDescription = "Character Image",
+                modifier = Modifier.fillMaxWidth().height(300.dp)
+            )
 
-        Button(
-            onClick = {
+            Spacer(modifier = Modifier.height(16.dp))
+
+            ModernButton(text = "Save Image", onClick = {
                 coroutineScope.launch(Dispatchers.IO) {
                     val success = saveImageToGallery(imageUrl, context)
                     withContext(Dispatchers.Main) {
@@ -58,18 +58,9 @@ fun CharacterDetailScreen(characterId: String?, navController: NavHostController
                         }
                     }
                 }
-            },
-            modifier = Modifier.padding(top = 8.dp)
-        ) {
-            Text("Save Image")
-        }
+            })
 
-        // Botón para volver atrás
-        Button(
-            onClick = { navController.popBackStack() },
-            modifier = Modifier.padding(top = 16.dp)
-        ) {
-            Text("Back")
+            ModernButton(text = "Back", onClick = { navController.popBackStack() })
         }
     }
 }
@@ -117,7 +108,3 @@ suspend fun saveImageToGallery(imageUrl: String, context: android.content.Contex
         false
     }
 }
-
-
-
-

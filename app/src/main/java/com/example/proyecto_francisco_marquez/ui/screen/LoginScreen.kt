@@ -15,9 +15,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.proyecto_francisco_marquez.R
+import com.example.proyecto_francisco_marquez.utils.InicioConGoogle
+import com.example.proyecto_francisco_marquez.ui.ModernButton
+import com.example.proyecto_francisco_marquez.ui.SubtitleStyle
+import com.example.proyecto_francisco_marquez.ui.TitleStyle
 import com.example.proyecto_francisco_marquez.ui.gradientBackground
 import com.example.proyecto_francisco_marquez.viewmodel.AuthViewModel
-import com.example.proyecto_francisco_marquez.utils.InicioConGoogle
 
 @Composable
 fun LoginScreen(navController: NavHostController) {
@@ -27,14 +30,15 @@ fun LoginScreen(navController: NavHostController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    // Google Sign-In launcher
     val launcher = rememberLauncherForActivityResult(
         contract = InicioConGoogle()
     ) { result ->
         if (result != null) {
             authViewModel.loginWithGoogle(result) { success, errorMessage ->
                 if (success) {
-                    navController.navigate("home")
+                    navController.navigate("filterScreen") {
+                        popUpTo("login") { inclusive = true }
+                    }
                 } else {
                     Toast.makeText(context, "Error: $errorMessage", Toast.LENGTH_LONG).show()
                 }
@@ -45,29 +49,24 @@ fun LoginScreen(navController: NavHostController) {
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
+        modifier = Modifier.fillMaxSize().padding(16.dp).gradientBackground()
     ) {
         Column(
-            modifier = Modifier.align(Alignment.Center).gradientBackground().fillMaxSize(),
+            modifier = Modifier.align(Alignment.Center).fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // App Logo
             Image(
-                painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                painter = painterResource(id = R.drawable.app_logo_background),
                 contentDescription = "App Logo",
                 modifier = Modifier.size(120.dp).padding(bottom = 16.dp)
             )
 
-            // Title
             Text(
                 text = "Rick And Morty",
-                style = MaterialTheme.typography.headlineLarge,
+                style = TitleStyle,
                 modifier = Modifier.padding(bottom = 24.dp)
             )
 
-            // Email Input
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
@@ -75,7 +74,6 @@ fun LoginScreen(navController: NavHostController) {
                 modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
             )
 
-            // Password Input
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
@@ -84,40 +82,34 @@ fun LoginScreen(navController: NavHostController) {
                 visualTransformation = PasswordVisualTransformation()
             )
 
-            // Login Button
-            Button(
-                onClick = {
+            ModernButton(text = "Login", onClick = {
+                if (email.isNotEmpty() && password.isNotEmpty()) {
                     authViewModel.login(email, password) { success, errorMessage ->
                         if (success) {
-                            navController.navigate("home")
+                            navController.navigate("filterScreen") {
+                                popUpTo("login") { inclusive = true }
+                            }
                         } else {
-                            Toast.makeText(context, "Error: $errorMessage", Toast.LENGTH_LONG).show()
+                            val message = errorMessage ?: "Email or password incorrect"
+                            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                         }
                     }
-                },
-                modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
-            ) {
-                Text("Login")
-            }
+                } else {
+                    Toast.makeText(context, "Please enter email and password", Toast.LENGTH_LONG).show()
+                }
+            })
 
-            // Google Sign-In Button
-            Button(
-                onClick = { launcher.launch(Unit) },
-                modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
-            ) {
-                Text("Continue with Google")
-            }
+            ModernButton(text = "Continue with Google", onClick = { launcher.launch(Unit) })
 
-            // Navigation Options
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
             ) {
                 TextButton(onClick = { navController.navigate("register") }) {
-                    Text("Registrar")
+                    Text("Registrar", style = SubtitleStyle)
                 }
                 TextButton(onClick = { navController.navigate("forgotPassword") }) {
-                    Text("Has olvidado la contraseña?")
+                    Text("¿Has olvidado la contraseña?", style = SubtitleStyle)
                 }
             }
         }

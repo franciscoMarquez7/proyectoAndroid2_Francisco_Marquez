@@ -74,4 +74,22 @@ class AuthViewModel : ViewModel() {
         }
     }
 
+    fun sendPasswordResetEmail(email: String,callback: (Boolean, String?) -> Unit) {
+
+        if (email.isEmpty()) {
+            callback(false, "Email cannot be empty")
+            return
+        }
+
+        auth.sendPasswordResetEmail(email)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    callback(true, null)
+                } else {
+                    callback(false, task.exception?.localizedMessage ?: "Error sending email")
+                }
+            }
+
+    }
+
 }
