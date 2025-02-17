@@ -86,6 +86,10 @@ fun FilterScreen(navController: NavHostController) {
                 Button(onClick = { navController.navigate("characterScreen/$selectedFilter") }) {
                     Text("Filtrar")
                 }
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(onClick = { navController.navigate("databaseScreen") }) {
+                    Text("Base de Datos")
+                }
             }
         }
     }
