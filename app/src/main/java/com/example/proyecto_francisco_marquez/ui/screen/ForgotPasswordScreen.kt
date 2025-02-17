@@ -14,7 +14,6 @@ import com.example.proyecto_francisco_marquez.ui.ModernButton
 import com.example.proyecto_francisco_marquez.ui.SubtitleStyle
 import com.example.proyecto_francisco_marquez.ui.TitleStyle
 import com.example.proyecto_francisco_marquez.ui.gradientBackground
-import com.example.proyecto_francisco_marquez.ui.theme.*
 import com.example.proyecto_francisco_marquez.viewmodel.AuthViewModel
 
 @Composable
@@ -31,7 +30,7 @@ fun ForgotPasswordScreen(navController: NavHostController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Reset Password",
+                text = "Resetar contraseña",
                 style = TitleStyle,
                 modifier = Modifier.padding(bottom = 24.dp)
             )

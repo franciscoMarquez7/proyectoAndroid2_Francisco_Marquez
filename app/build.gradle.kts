@@ -63,6 +63,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx:21.3.0")
     implementation("com.google.android.gms:play-services-auth:20.6.0")
     implementation("io.coil-kt:coil-compose:2.2.2")
+    implementation(libs.firebase.crashlytics.buildtools)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

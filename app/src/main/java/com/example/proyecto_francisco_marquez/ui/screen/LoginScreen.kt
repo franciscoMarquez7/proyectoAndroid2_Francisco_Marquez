@@ -26,6 +26,7 @@ import com.example.proyecto_francisco_marquez.viewmodel.AuthViewModel
 fun LoginScreen(navController: NavHostController) {
     val authViewModel: AuthViewModel = viewModel()
     val context = LocalContext.current
+    val user by authViewModel.userState.collectAsState()
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -44,21 +45,30 @@ fun LoginScreen(navController: NavHostController) {
                 }
             }
         } else {
-            Toast.makeText(context, "Google Sign-In cancelled", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Inicio con Google cancelado", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    // Verificar si el usuario ya está autenticado y redirigir automáticamente
+    LaunchedEffect(user) {
+        if (user != null) {
+            navController.navigate("filterScreen") {
+                popUpTo("login") { inclusive = true }
+            }
         }
     }
 
     Box(
-        modifier = Modifier.fillMaxSize().padding(16.dp).gradientBackground()
+        modifier = Modifier.fillMaxSize().gradientBackground()
     ) {
         Column(
-            modifier = Modifier.align(Alignment.Center).fillMaxSize(),
+            modifier = Modifier.fillMaxSize().padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(id = R.drawable.app_logo_background),
+                painter = painterResource(id = R.drawable.app_logo),
                 contentDescription = "App Logo",
-                modifier = Modifier.size(120.dp).padding(bottom = 16.dp)
+                modifier = Modifier.size(170.dp).padding(bottom = 16.dp)
             )
 
             Text(
@@ -77,7 +87,7 @@ fun LoginScreen(navController: NavHostController) {
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Password") },
+                label = { Text("Contraseña") },
                 modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
                 visualTransformation = PasswordVisualTransformation()
             )
@@ -90,16 +100,16 @@ fun LoginScreen(navController: NavHostController) {
                                 popUpTo("login") { inclusive = true }
                             }
                         } else {
-                            val message = errorMessage ?: "Email or password incorrect"
+                            val message = errorMessage ?: "Email o contraseña incorrecta"
                             Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                         }
                     }
                 } else {
-                    Toast.makeText(context, "Please enter email and password", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Por favor introduzca email y contraseña correctos", Toast.LENGTH_LONG).show()
                 }
             })
 
-            ModernButton(text = "Continue with Google", onClick = { launcher.launch(Unit) })
+            ModernButton(text = "Continuar con Google", onClick = { launcher.launch(Unit) })
 
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,

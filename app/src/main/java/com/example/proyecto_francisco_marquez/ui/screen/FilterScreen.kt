@@ -11,21 +11,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.proyecto_francisco_marquez.ui.ModernButton
 import com.example.proyecto_francisco_marquez.ui.TitleStyle
 import com.example.proyecto_francisco_marquez.ui.gradientBackground
-import com.example.proyecto_francisco_marquez.viewmodel.CharactersViewModel
+import com.example.proyecto_francisco_marquez.viewmodel.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FilterScreen(navController: NavHostController, viewModel: CharactersViewModel = viewModel()) {
+fun FilterScreen(navController: NavHostController) {
+    val authViewModel: AuthViewModel = viewModel()
+    val user by authViewModel.userState.collectAsState()
+
     var selectedFilter by remember { mutableStateOf("All") }
-    val statusOptions = listOf("All", "Alive", "Dead")
+    val statusOptions = listOf("All", "Alive", "Dead", "Unknown")
     var expanded by remember { mutableStateOf(false) }
-    var searchQuery by remember { mutableStateOf("") }
-    var characterToModify by remember { mutableStateOf("") }
-    var characterToDelete by remember { mutableStateOf("") }
-    var newCharacter by remember { mutableStateOf("") }
+
+    LaunchedEffect(user) {
+        if (user == null) {
+            navController.navigate("login") {
+                popUpTo("filterScreen") { inclusive = true }
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -33,6 +39,7 @@ fun FilterScreen(navController: NavHostController, viewModel: CharactersViewMode
                 title = { Text("Menu", style = TitleStyle) },
                 actions = {
                     IconButton(onClick = {
+                        authViewModel.logout()
                         navController.navigate("login") {
                             popUpTo("login") { inclusive = true }
                         }
@@ -43,111 +50,41 @@ fun FilterScreen(navController: NavHostController, viewModel: CharactersViewMode
             )
         }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier.fillMaxSize().padding(paddingValues).padding(16.dp).gradientBackground(),
-            horizontalAlignment = Alignment.CenterHorizontally
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .gradientBackground()
+                .padding(paddingValues)
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
         ) {
-            Card(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
-                elevation = CardDefaults.cardElevation(8.dp)
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Search Character", style = TitleStyle)
+                Text("Filtrar por estado", style = TitleStyle, modifier = Modifier.padding(bottom = 8.dp))
+                Box(modifier = Modifier.fillMaxWidth()) {
                     OutlinedTextField(
-                        value = searchQuery,
-                        onValueChange = { searchQuery = it },
-                        label = { Text("Enter character name") },
-                        modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+                        value = selectedFilter,
+                        onValueChange = {},
+                        label = { Text("Elegir estado") },
+                        readOnly = true,
+                        modifier = Modifier.fillMaxWidth().clickable { expanded = !expanded }
                     )
-                    ModernButton(text = "Search", onClick = {
-                        navController.navigate("characterScreen/$selectedFilter/$searchQuery")
-                    })
-                }
-            }
-
-            Card(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
-                elevation = CardDefaults.cardElevation(8.dp)
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Filter by Status", style = TitleStyle)
-                    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
-                        OutlinedTextField(
-                            value = selectedFilter,
-                            onValueChange = {},
-                            label = { Text("Choose Status") },
-                            readOnly = true,
-                            modifier = Modifier.fillMaxWidth().menuAnchor().clickable { expanded = true }
-                        )
-                        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                            statusOptions.forEach { status ->
-                                DropdownMenuItem(
-                                    text = { Text(status) },
-                                    onClick = {
-                                        selectedFilter = status
-                                        expanded = false
-                                    }
-                                )
-                            }
+                    DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                        statusOptions.forEach { status ->
+                            DropdownMenuItem(
+                                text = { Text(status) },
+                                onClick = {
+                                    selectedFilter = status
+                                    expanded = false
+                                }
+                            )
                         }
                     }
-                    ModernButton(text = "Filter", onClick = {
-                        navController.navigate("characterScreen/$selectedFilter")
-                    })
                 }
-            }
-
-            Card(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
-                elevation = CardDefaults.cardElevation(8.dp)
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Modify Character", style = TitleStyle)
-                    OutlinedTextField(
-                        value = characterToModify,
-                        onValueChange = { characterToModify = it },
-                        label = { Text("Enter Character ID") },
-                        modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
-                    )
-                    ModernButton(text = "Modify", onClick = {
-                        navController.navigate("modifyCharacterScreen/$characterToModify")
-                    })
-                }
-            }
-
-            Card(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
-                elevation = CardDefaults.cardElevation(8.dp)
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Delete Character", style = TitleStyle)
-                    OutlinedTextField(
-                        value = characterToDelete,
-                        onValueChange = { characterToDelete = it },
-                        label = { Text("Enter Character ID") },
-                        modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
-                    )
-                    ModernButton(text = "Delete", onClick = {
-                        navController.navigate("deleteCharacterScreen/$characterToDelete")
-                    })
-                }
-            }
-
-            Card(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
-                elevation = CardDefaults.cardElevation(8.dp)
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Add Character", style = TitleStyle)
-                    OutlinedTextField(
-                        value = newCharacter,
-                        onValueChange = { newCharacter = it },
-                        label = { Text("Enter New Character Name") },
-                        modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
-                    )
-                    ModernButton(text = "Add", onClick = {
-                        navController.navigate("addCharacterScreen/$newCharacter")
-                    })
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(onClick = { navController.navigate("characterScreen/$selectedFilter") }) {
+                    Text("Filtrar")
                 }
             }
         }

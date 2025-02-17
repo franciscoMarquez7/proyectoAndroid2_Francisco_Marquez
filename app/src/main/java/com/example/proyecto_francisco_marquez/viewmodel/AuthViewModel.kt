@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.firebase.auth.GoogleAuthProvider
-
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.commons.logging.Log
 
 class AuthViewModel : ViewModel() {
 
@@ -24,12 +24,11 @@ class AuthViewModel : ViewModel() {
                     _userState.value = auth.currentUser
                     onResult(true, null)
                 } else {
-                    val errorMessage = task.exception?.message ?: "Unknown error"
+                    val errorMessage = task.exception?.message ?: "Error desconocido"
                     onResult(false, errorMessage)
                 }
             }
     }
-
 
     fun register(email: String, password: String, onResult: (Boolean, String?) -> Unit) {
         auth.createUserWithEmailAndPassword(email, password)
@@ -38,58 +37,52 @@ class AuthViewModel : ViewModel() {
                     _userState.value = auth.currentUser
                     onResult(true, null)
                 } else {
-                    val errorMessage = task.exception?.message ?: "Unknown error"
+                    val errorMessage = task.exception?.message ?: "Error desconocido"
                     onResult(false, errorMessage)
                 }
             }
     }
-
 
     fun logout() {
         auth.signOut()
         _userState.value = null
     }
 
-    fun resetPassword(email: String, onResult: (Boolean) -> Unit) {
-        auth.sendPasswordResetEmail(email)
-            .addOnCompleteListener { task ->
-                onResult(task.isSuccessful)
-            }
-    }
-    fun loginWithGoogle(result: Intent?, onResult: (Boolean, String?) -> Unit) {
-        val account = GoogleSignIn.getSignedInAccountFromIntent(result)?.result
-        if (account != null) {
-            val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-            auth.signInWithCredential(credential)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        _userState.value = auth.currentUser
-                        onResult(true, null)
-                    } else {
-                        onResult(false, task.exception?.message)
-                    }
-                }
-        } else {
-            onResult(false, "Google Sign-In failed")
-        }
-    }
-
-    fun sendPasswordResetEmail(email: String,callback: (Boolean, String?) -> Unit) {
-
+    fun sendPasswordResetEmail(email: String, onResult: (Boolean, String?) -> Unit) {
         if (email.isEmpty()) {
-            callback(false, "Email cannot be empty")
+            onResult(false, "El email no puede estar vacío")
             return
         }
 
         auth.sendPasswordResetEmail(email)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    callback(true, null)
+                    onResult(true, null)
                 } else {
-                    callback(false, task.exception?.localizedMessage ?: "Error sending email")
+                    onResult(false, task.exception?.localizedMessage ?: "Error al enviar el correo")
                 }
             }
-
     }
 
+    fun loginWithGoogle(result: Intent?, onResult: (Boolean, String?) -> Unit) {
+        try {
+            val account = GoogleSignIn.getSignedInAccountFromIntent(result).result
+            if (account?.idToken != null) {
+                val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+                auth.signInWithCredential(credential)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            _userState.value = auth.currentUser
+                            onResult(true, null)
+                        } else {
+                            onResult(false, task.exception?.message ?: "Error al iniciar sesión con Google")
+                        }
+                    }
+            } else {
+                onResult(false, "No se obtuvo una cuenta válida")
+            }
+        } catch (e: Exception) {
+            onResult(false, "Error en Google Sign-In: ${e.message}")
+        }
+    }
 }

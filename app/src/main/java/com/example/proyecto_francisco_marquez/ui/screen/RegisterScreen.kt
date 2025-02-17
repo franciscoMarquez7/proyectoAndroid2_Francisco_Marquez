@@ -50,7 +50,7 @@ fun RegisterScreen(navController: NavHostController) {
                 modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
             )
 
-            ModernButton(text = "Register", onClick = {
+            ModernButton(text = "Registrar", onClick = {
                 authViewModel.register(email, password) { success, errorMessage ->
                     if (success) {
                         navController.navigate("login")

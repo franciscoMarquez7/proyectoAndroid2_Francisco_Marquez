@@ -47,7 +47,7 @@ fun CharacterDetailScreen(characterId: String?, navController: NavHostController
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            ModernButton(text = "Save Image", onClick = {
+            ModernButton(text = "Guardar", onClick = {
                 coroutineScope.launch(Dispatchers.IO) {
                     val success = saveImageToGallery(imageUrl, context)
                     withContext(Dispatchers.Main) {

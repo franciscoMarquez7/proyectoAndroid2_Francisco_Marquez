@@ -2,6 +2,8 @@ package com.example.proyecto_francisco_marquez.ui.screen
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,6 +23,7 @@ import com.example.proyecto_francisco_marquez.viewmodel.CharactersViewModel
 fun CharacterScreen(navController: NavHostController, filter: String, searchQuery: String = "", viewModel: CharactersViewModel = viewModel()) {
     val characters by viewModel.characters.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
+    val scrollState = rememberScrollState()
 
     val filteredCharacters = characters.filter {
         (filter == "All" || it.status.equals(filter, ignoreCase = true)) &&
@@ -28,7 +31,10 @@ fun CharacterScreen(navController: NavHostController, filter: String, searchQuer
     }
 
     Box(modifier = Modifier.fillMaxSize().padding(16.dp).gradientBackground()) {
-        Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            modifier = Modifier.fillMaxSize().verticalScroll(scrollState),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Text("Character List", style = TitleStyle, modifier = Modifier.padding(bottom = 16.dp))
 
             if (viewModel.isLoading.collectAsState().value) {
@@ -52,7 +58,7 @@ fun CharacterScreen(navController: NavHostController, filter: String, searchQuer
                                 modifier = Modifier.size(80.dp)
                             )
                             Column(modifier = Modifier.padding(start = 8.dp)) {
-                                Text(text = character.name, style = SubtitleStyle)
+                                Text(text = "Name:  ${character.name}",style = MaterialTheme.typography.bodyMedium)
                                 Text(text = "Status: ${character.status}", style = MaterialTheme.typography.bodyMedium)
                                 Text(text = "Species: ${character.species}", style = MaterialTheme.typography.bodyMedium)
                             }

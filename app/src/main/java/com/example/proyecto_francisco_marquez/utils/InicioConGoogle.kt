@@ -6,7 +6,6 @@ import androidx.activity.result.contract.ActivityResultContract
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.example.proyecto_francisco_marquez.R
 
 class InicioConGoogle : ActivityResultContract<Unit, Intent?>() {
 
