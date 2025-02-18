@@ -18,10 +18,9 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EliminarPersonajeScreen(navController: NavHostController, characterName: String) {
+fun EliminarPersonajeScreen(navController: NavHostController, characterId: String, characterName: String) {
     val firestoreService = FirestoreService()
 
-    // Usamos un CoroutineScope para ejecutar la función suspend
     val scope = rememberCoroutineScope()
 
     Scaffold(
@@ -47,13 +46,10 @@ fun EliminarPersonajeScreen(navController: NavHostController, characterName: Str
 
             Button(
                 onClick = {
-                    // Llamar a la función suspend usando una corrutina
                     scope.launch {
-                        // Llamamos a Firestore para eliminar el personaje
-                        val success = firestoreService.deleteCharacter(characterName)
+                        val success = firestoreService.deleteCharacter(characterId)
                         if (success) {
-                            // Volver atrás después de la eliminación
-                            navController.popBackStack()
+                            navController.popBackStack() // Volver después de la eliminación
                         } else {
                             // Mostrar un mensaje de error
                         }

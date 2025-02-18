@@ -15,7 +15,6 @@ import com.example.proyecto_francisco_marquez.ui.screen.ModificarPersonajeScreen
 import com.example.proyecto_francisco_marquez.ui.screen.RegisterScreen
 import com.google.firebase.auth.FirebaseAuth
 
-
 @Composable
 fun Navegacion(navController: NavHostController) {
     val auth = FirebaseAuth.getInstance()
@@ -40,13 +39,14 @@ fun Navegacion(navController: NavHostController) {
         composable("agregarPersonajeScreen") {
             AgregarPersonajeScreen(navController)
         }
-        composable("eliminarPersonajeScreen/{characterName}") { backStackEntry ->
-            val characterName = backStackEntry.arguments?.getString("characterName")
-            EliminarPersonajeScreen(navController, characterName ?: "")
-        }
         composable("characterScreen/{filter}") { backStackEntry ->
             val filter = backStackEntry.arguments?.getString("filter") ?: "All"
             CharacterScreen(navController = navController, filter = filter)
+        }
+        composable("eliminarPersonajeScreen/{characterId}/{characterName}") { backStackEntry ->
+            val characterId = backStackEntry.arguments?.getString("characterId") ?: ""
+            val characterName = backStackEntry.arguments?.getString("characterName") ?: ""
+            EliminarPersonajeScreen(navController, characterId, characterName)
         }
         composable("characterDetail/{characterId}") { backStackEntry ->
             val characterId = backStackEntry.arguments?.getString("characterId")
@@ -54,3 +54,4 @@ fun Navegacion(navController: NavHostController) {
         }
     }
 }
+
