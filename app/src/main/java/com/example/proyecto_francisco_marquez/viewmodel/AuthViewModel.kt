@@ -8,14 +8,20 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.commons.logging.Log
 
 class AuthViewModel : ViewModel() {
 
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val auth = FirebaseAuth.getInstance()
 
     private val _userState = MutableStateFlow<FirebaseUser?>(auth.currentUser)
     val userState: StateFlow<FirebaseUser?> get() = _userState
+
+    init {
+        // Configurar listener de estado de autenticación
+        auth.addAuthStateListener { firebaseAuth ->
+            _userState.value = firebaseAuth.currentUser
+        }
+    }
 
     fun login(email: String, password: String, onResult: (Boolean, String?) -> Unit) {
         auth.signInWithEmailAndPassword(email, password)

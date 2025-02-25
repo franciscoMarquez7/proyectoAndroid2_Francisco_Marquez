@@ -12,7 +12,20 @@
           "package_name": "com.example.proyecto_francisco_marquez"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "262603989783-faqvf1fdag5otvj9dmr84224mu2jr41g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.proyecto_francisco_marquez",
+            "certificate_hash": "662a289e799625240f8015f7a9e3f19fffc89d19"
+          }
+        },
+        {
+          "client_id": "262603989783-v701ebi3au08lifp0m457eao9l7rqi3t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBA9mcU-kjYMRxiTDKpgdIMIrH7r-tFulU"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "262603989783-v701ebi3au08lifp0m457eao9l7rqi3t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

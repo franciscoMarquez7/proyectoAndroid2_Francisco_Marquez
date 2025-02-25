@@ -16,11 +16,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.proyecto_francisco_marquez.R
 import com.example.proyecto_francisco_marquez.utils.InicioConGoogle
-import com.example.proyecto_francisco_marquez.ui.ModernButton
-import com.example.proyecto_francisco_marquez.ui.SubtitleStyle
-import com.example.proyecto_francisco_marquez.ui.TitleStyle
-import com.example.proyecto_francisco_marquez.ui.gradientBackground
 import com.example.proyecto_francisco_marquez.viewmodel.AuthViewModel
+import kotlinx.coroutines.delay
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.text.style.TextAlign
 
 @Composable
 fun LoginScreen(navController: NavHostController) {
@@ -37,7 +41,7 @@ fun LoginScreen(navController: NavHostController) {
         if (result != null) {
             authViewModel.loginWithGoogle(result) { success, errorMessage ->
                 if (success) {
-                    navController.navigate("filterScreen") {
+                    navController.navigate("filter") {
                         popUpTo("login") { inclusive = true }
                     }
                 } else {
@@ -52,76 +56,198 @@ fun LoginScreen(navController: NavHostController) {
     // Verificar si el usuario ya está autenticado y redirigir automáticamente
     LaunchedEffect(user) {
         if (user != null) {
-            navController.navigate("filterScreen") {
+            navController.navigate("filter") {
                 popUpTo("login") { inclusive = true }
             }
         }
     }
 
     Box(
-        modifier = Modifier.fillMaxSize().gradientBackground()
+        modifier = Modifier.fillMaxSize()
     ) {
+        // Imagen de fondo con efecto de oscurecimiento
+        Image(
+            painter = painterResource(id = R.drawable.imagen_fondo),
+            contentDescription = "Fondo",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop,
+            alpha = 0.3f
+        )
+
+        // Contenido principal
         Column(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            Spacer(modifier = Modifier.height(48.dp))
+
+            // Logo con animación suave
             Image(
-                painter = painterResource(id = R.drawable.app_logo),
-                contentDescription = "App Logo",
-                modifier = Modifier.size(170.dp).padding(bottom = 16.dp)
+                painter = painterResource(id = R.mipmap.imagen_logo_foreground),
+                contentDescription = "Logo",
+                modifier = Modifier
+                    .size(180.dp)
+                    .padding(8.dp),
+                contentScale = ContentScale.Fit
             )
 
             Text(
-                text = "Rick And Morty",
-                style = TitleStyle,
-                modifier = Modifier.padding(bottom = 24.dp)
+                text = "Ricky And Morty",
+                style = MaterialTheme.typography.headlineMedium,
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .padding(bottom = 32.dp)
+                    .shadow(elevation = 4.dp)
             )
 
+            // Campos de entrada con estilo mejorado
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("Email") },
-                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
+                label = { Text("Email", color = Color.Black) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color.Black,
+                    unfocusedBorderColor = Color.Black,
+                    focusedLabelColor = Color.Black,
+                    unfocusedLabelColor = Color.Black,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
+                ),
+                shape = RoundedCornerShape(12.dp)
             )
 
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Contraseña") },
-                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
-                visualTransformation = PasswordVisualTransformation()
+                label = { Text("Contraseña", color = Color.Black) },
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color.Black,
+                    unfocusedBorderColor = Color.Black,
+                    focusedLabelColor = Color.Black,
+                    unfocusedLabelColor = Color.Black,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
+                ),
+                shape = RoundedCornerShape(12.dp)
             )
 
-            ModernButton(text = "Login", onClick = {
-                if (email.isNotEmpty() && password.isNotEmpty()) {
-                    authViewModel.login(email, password) { success, errorMessage ->
-                        if (success) {
-                            navController.navigate("filterScreen") {
-                                popUpTo("login") { inclusive = true }
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Botones con estilo mejorado
+            Button(
+                onClick = {
+                    if (email.isNotEmpty() && password.isNotEmpty()) {
+                        authViewModel.login(email, password) { success, errorMessage ->
+                            if (success) {
+                                navController.navigate("filter") {
+                                    popUpTo("login") { inclusive = true }
+                                }
+                            } else {
+                                Toast.makeText(context, errorMessage ?: "Error de autenticación", Toast.LENGTH_LONG).show()
                             }
-                        } else {
-                            val message = errorMessage ?: "Email o contraseña incorrecta"
-                            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                         }
+                    } else {
+                        Toast.makeText(context, "Por favor, complete todos los campos", Toast.LENGTH_LONG).show()
                     }
-                } else {
-                    Toast.makeText(context, "Por favor introduzca email y contraseña correctos", Toast.LENGTH_LONG).show()
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+                    .padding(horizontal = 16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Black.copy(alpha = 0.8f)
+                ),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text("Iniciar Sesión", fontSize = 16.sp, color = Color.White)
+            }
+
+            Button(
+                onClick = { launcher.launch(Unit) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+                    .padding(horizontal = 16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.DarkGray
+                ),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text("Continuar con Google", fontSize = 16.sp, color = Color.White)
                 }
-            })
+            }
 
-            ModernButton(text = "Continuar con Google", onClick = { launcher.launch(Unit) })
-
+            // Enlaces de navegación ahora justo debajo de los botones
             Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 TextButton(onClick = { navController.navigate("register") }) {
-                    Text("Registrar", style = SubtitleStyle)
+                    Text(
+                        "Registrarse",
+                        color = Color.Black,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
+                
                 TextButton(onClick = { navController.navigate("forgotPassword") }) {
-                    Text("¿Has olvidado la contraseña?", style = SubtitleStyle)
+                    Text(
+                        "¿Olvidaste tu contraseña?",
+                        color = Color.Black,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
         }
+    }
+}
+
+@Composable
+fun ShimmerButton(text: String, onClick: () -> Unit) {
+    var shimmerOffset by remember { mutableStateOf(0f) }
+    
+    LaunchedEffect(Unit) {
+        while(true) {
+            shimmerOffset = (shimmerOffset + 1f) % 360f
+            delay(16)
+        }
+    }
+
+    Button(
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color(0xFF00E676)
+        ),
+        shape = RoundedCornerShape(28.dp)
+    ) {
+        Text(
+            text = text,
+            color = Color.White,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold
+        )
     }
 }
